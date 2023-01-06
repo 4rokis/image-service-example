@@ -1,0 +1,12 @@
+{
+  "extends":["next/core-web-vitals", "plugin:prettier/recommended", "plugin:@next/next/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["import", "@typescript-eslint"],
+  "ignorePatterns": [
+    "node_modules/**",
+    "storybook-static/**",
+    ".next/**",
+    "out/**",
+    "dist/**"
+  ]
+}

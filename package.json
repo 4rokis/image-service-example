@@ -1,0 +1,36 @@
+{
+  "name": "image-servise-example",
+  "version": "1.0.0",
+  "author": "Bogdan Sikora <bogdan@arokis.me>",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "prettier": "prettier",
+    "lint:raw": "eslint --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "npm run lint:raw -- . --fix",
+    "lint": "npm run lint:raw -- ."
+  },
+  "browserslist": "defaults, not ie <= 11",
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.4",
+    "autoprefixer": "^10.4.12",
+    "focus-visible": "^5.2.0",
+    "next": "13.0.2",
+    "postcss-focus-visible": "^6.0.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwindcss": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "18.11.18",
+    "@types/react": "18.0.26",
+    "@typescript-eslint/eslint-plugin": "^5.48.0",
+    "eslint": "8.26.0",
+    "eslint-config-next": "13.0.2",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "prettier-plugin-tailwindcss": "^0.1.11"
+  }
+}
