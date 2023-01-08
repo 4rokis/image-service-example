@@ -3,6 +3,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "declaration": true,
+    "isolatedModules": false,
     "composite": true,
     "allowSyntheticDefaultImports": true,
     "module": "commonjs",
@@ -14,11 +15,9 @@
     "target": "es5",
     "moduleResolution": "node",
     "jsx": "react",
-    "isolatedModules": true,
     "strict": true,
     "incremental": true,
-    "skipLibCheck": true,
-    "baseUrl": "."
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",

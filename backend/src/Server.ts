@@ -1,4 +1,5 @@
 import express, { Express } from 'express'
+import { resize } from './paths/resize'
 import { PORT } from './utils/constants'
 
 export class Server {
@@ -20,6 +21,8 @@ export class Server {
     )
 
     this.app.use(express.static(`${__dirname}/../storage`))
+
+    this.app.route('/resize').get(resize)
 
     this.app.listen(PORT, () => {
       console.log(`Listening on port ${PORT}`)
