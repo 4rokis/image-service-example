@@ -6,7 +6,7 @@ const SIZES = [600, 800, 1200, 1600]
 export const resizeImage = async (
   image: Sharp.Sharp,
   storage: Storage,
-  prefix: string = ""
+  prefix: string = '',
 ): Promise<void> => {
   await Promise.all(
     SIZES.map((width) => {
