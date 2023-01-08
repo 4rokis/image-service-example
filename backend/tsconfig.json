@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "composite": true,
+    "allowSyntheticDefaultImports": true,
+    "module": "commonjs",
+    "outDir": "./dist",
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "target": "es5",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "isolatedModules": true,
+    "strict": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "baseUrl": "."
+  },
+  "include": [
+    "src/**/*.ts",
+    "index.ts",
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}
