@@ -1,61 +1,52 @@
 import { Params, Query } from './types'
-import { isDefined, isNumberOrUndefined } from './utils'
+import { isDefined, isNumber } from './utils'
 
-export const checkQueryParams = (queryParams: Query) => {
-  const {
-    dir,
-    fileName,
-    size_width,
-    size_height,
-    left,
-    top,
-    width,
-    height,
-    rotate,
-    quality,
-  } = queryParams
+export const checkTransformations = (queryParams: Query) => {
+  const { left, top, width, height, rotate } = queryParams
+
   if (
-    !isDefined(dir) ||
-    !isDefined(fileName) ||
-    !isDefined(size_width) ||
-    !isDefined(size_height) ||
-    !isNumberOrUndefined(left) ||
-    !isNumberOrUndefined(top) ||
-    !isNumberOrUndefined(width) ||
-    !isNumberOrUndefined(height) ||
-    !isNumberOrUndefined(rotate) ||
-    !isNumberOrUndefined(quality)
+    isDefined(left) ||
+    isDefined(top) ||
+    isDefined(width) ||
+    isDefined(height) ||
+    isDefined(rotate)
   ) {
-    return false
+    return (
+      isNumber(left) &&
+      isNumber(top) &&
+      isNumber(width) &&
+      isNumber(height) &&
+      isNumber(rotate)
+    )
   }
-
   return true
 }
 
-export const getQueryParams = (queryParams: Query): Params => {
-  const {
-    dir,
-    fileName,
-    size_width,
-    size_height,
-    left,
-    top,
-    width,
-    height,
-    rotate,
-    quality,
-  } = queryParams
+export const checkQueryParams = (queryParams: Query) => {
+  return checkTransformations(queryParams)
+}
+
+export const getQueryParams = (queryParams: Query): Params | null => {
+  const { path, left, top, width, height, rotate } = queryParams
+
+  if (!checkQueryParams(queryParams)) {
+    return null
+  }
 
   return {
-    dir: dir as string,
-    fileName: fileName as string,
-    size_width: size_width === 'AUTO' ? null : Number(size_width),
-    size_height: size_height === 'AUTO' ? null : Number(size_height),
-    left: left ? Number(left) : null,
-    top: top ? Number(top) : null,
-    width: width ? Number(width) : null,
-    height: height ? Number(height) : null,
-    rotate: rotate ? Number(rotate) : 0,
-    quality: quality ? Number(quality) : 90,
+    transform:
+      isDefined(left) &&
+      isDefined(top) &&
+      isDefined(width) &&
+      isDefined(height) &&
+      isDefined(rotate)
+        ? {
+            left: Number(left),
+            top: Number(top),
+            width: Number(width),
+            height: Number(height),
+            rotate: Number(rotate),
+          }
+        : undefined,
   }
 }

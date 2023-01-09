@@ -1,8 +1,8 @@
 import { Storage } from './Storage'
 import { existsSync, readFile, writeFile } from 'fs'
 
-const URL = 'http://localhost:3000/storage'
-const BASE_PATH = `${__dirname}/../../../public`
+const URL = 'http://localhost:3000/'
+const BASE_PATH = `${__dirname}/../../../public/`
 
 export class FileStorage implements Storage {
   getObjectURL(path: string): string {
