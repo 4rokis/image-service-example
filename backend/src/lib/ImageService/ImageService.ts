@@ -4,7 +4,7 @@ import { Storage } from '../../lib/storage/Storage'
 import { getFileName, rotated0 } from '../utils'
 import { UploadedFile } from 'express-fileupload'
 
-const SIZES = [600, 800, 1200, 1600]
+export const SIZES = [160, 320, 640, 750, 828, 1080, 1200, 1920, 2048, 3840]
 
 export class ImageService implements Runner {
   storage: Storage

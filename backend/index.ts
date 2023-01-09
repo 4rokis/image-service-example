@@ -17,14 +17,8 @@ app.use(
   }),
 )
 
-app.use(
-  express.static(`${__dirname}/../public`, {
-    extensions: ['html'],
-  }),
-)
+app.use(express.static(`${__dirname}/public`))
 app.use(fileUpload())
-
-app.use(express.static(`${__dirname}/../storage`))
 
 app.route('/api/upload').put(upload)
 
