@@ -63,7 +63,6 @@ export const edit = async (req: Request, res: Response) => {
     }
     const storage = new FileStorage()
     const data = await storage.getObject(params.path)
-    console.log('file', params.path)
     if (!data) {
       console.error('File not found')
       return res.status(500).json({
