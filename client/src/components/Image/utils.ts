@@ -1,17 +1,6 @@
-const IMAGE_BASE_URL = 'http://localhost:8080/'
+import { IMAGES_SIZES } from "../constants"
 
-export const IMAGES_SIZES = [
-  160,
-  320,
-  640,
-  750,
-  828,
-  1080,
-  1200,
-  1920,
-  2048,
-  3840,
-]
+const IMAGE_BASE_URL = 'http://localhost:8080/'
 
 export const parseFileName = (path: string) => {
   const pathParts = path.split('/')

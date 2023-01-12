@@ -1,7 +1,7 @@
 import React, { HTMLAttributes } from 'react'
 import NextImage from 'next/image'
 
-import { getS3SrcSet, myS3Loader } from './utils'
+import { getS3SrcSet } from './utils'
 
 type Props = HTMLAttributes<HTMLImageElement> & {
   src: string

@@ -15,11 +15,12 @@ import {
   ROTATE_ANGLE,
   ZOOM_STEP,
 } from "./ImageCropUtils";
+import { CropParams } from "@/types";
 
 type Props = {
   aspect: number;
   image: string;
-  onSave(path: string, paramQuery: string): void;
+  onSave(path: string, params: CropParams): void;
 };
 
 export const ImageCrop: React.FC<Props> = ({ image, aspect, onSave }) => {
@@ -80,19 +81,16 @@ export const ImageCrop: React.FC<Props> = ({ image, aspect, onSave }) => {
     const path = new URL(originalImage).pathname;
     const { x, y, width, height } = croppedAreaPixels.current;
     const { x: cropX, y: cropY } = params;
-    onSave(
-      path,
-      queryString.stringify({
-        rotate: rotate,
-        zoom: zoom,
-        left: x,
-        top: y,
-        x: cropX,
-        y: cropY,
-        width,
-        height,
-      })
-    );
+    onSave(path, {
+      rotate: rotate,
+      zoom: zoom,
+      left: x,
+      top: y,
+      x: cropX,
+      y: cropY,
+      width,
+      height,
+    });
   };
 
   React.useEffect(() => {

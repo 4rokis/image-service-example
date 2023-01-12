@@ -1,18 +1,17 @@
-import { Fragment, ReactNode, useRef } from 'react'
+import { Fragment, MutableRefObject, ReactNode } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 
 type Props = {
   open: boolean
+  initialFocus?: MutableRefObject<HTMLElement | null>
   onClose: () => void
   children?: ReactNode
 }
 
-export const Modal: React.FC<Props> = ({ open, children, onClose }) => {
-  const cancelButtonRef = useRef(null)
-
+export const Modal: React.FC<Props> = ({ open, children, onClose, initialFocus }) => {
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={onClose}>
+      <Dialog as="div" className="relative z-10" initialFocus={initialFocus} onClose={onClose}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

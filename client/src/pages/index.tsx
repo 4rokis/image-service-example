@@ -1,23 +1,24 @@
+import { Alert } from "@/components/Alert";
+import { IMAGES_SIZES } from "@/components/constants";
 import { FileInput } from "@/components/FileInput";
 import { ImageCrop } from "@/components/ImageCrop";
 import { Loader } from "@/components/Loader";
 import { Modal } from "@/components/Modal";
 import { Preview } from "@/components/Preview";
-import { createImageURL, destroyImageURL } from "@/lib/createImageURL";
-import { editUploadedImage, uploadImage } from "@/lib/uploadImage";
+import { useImageUpload } from "@/lib/useImageUpload";
+import { CropParams } from "@/types";
 import { useCallback, useState } from "react";
 
-export const SIZES = [160, 320, 640, 750, 828, 1080, 1200, 1920, 2048, 3840];
-
 export default function Home() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [image, setImage] = useState<string>("");
+  const { error, loading, image, editUploadedImage, uploadImage } =
+    useImageUpload();
   const [editImage, setEditImage] = useState<string | null>(null);
+  const [newImage, setNewImage] = useState<string | null>(null);
   const [data, setData] = useState<File | null>();
 
   const onUpload = useCallback(
     (data: File) => {
-      setEditImage(createImageURL(data));
+      setNewImage(URL.createObjectURL(data));
       setData(data);
     },
     [setEditImage]
@@ -27,34 +28,43 @@ export default function Home() {
     setEditImage(image);
   }, [setEditImage, image]);
 
-  const onEditClose = useCallback(() => {
-    setEditImage((prev) => {
-      if (prev?.startsWith("blog")) {
-        destroyImageURL(prev);
+  const onNewClose = useCallback(() => {
+    setNewImage((prev) => {
+      if (prev?.startsWith("blob")) {
+        URL.revokeObjectURL(prev) 
       }
       return null;
     });
+  }, [setNewImage]);
+
+  const onEditClose = useCallback(() => {
+    setEditImage(null);
   }, [setEditImage]);
 
-  const onCrop = useCallback(
-    async (path: string, paramsQuery: string) => {
-      console.log('path', path)
+  const onNewCrop = useCallback(
+    async (path: string, params: CropParams) => {
+      if (!data) {
+        throw new Error("New Image data not defined");
+      }
       try {
-        setLoading(true);
-        onEditClose();
-        const url = data ? await uploadImage(paramsQuery, data) : await editUploadedImage(paramsQuery, path)
-        if (!url) {
-          throw new Error('Upload failed')
-        }
-        setImage(url);
-      } catch (e) {
-        console.error(e);
+        uploadImage(data, params);
       } finally {
-        setData(null)
-        setLoading(false);
+        onNewClose();
+        setData(null);
       }
     },
-    [setImage, uploadImage, data,]
+    [editUploadedImage, data]
+  );
+
+  const onEditCrop = useCallback(
+    async (path: string, params: CropParams) => {
+      try {
+        editUploadedImage(path, params);
+      } finally {
+        onEditClose();
+      }
+    },
+    [editUploadedImage]
   );
 
   return (
@@ -63,6 +73,11 @@ export default function Home() {
         Image service
       </h1>
       <FileInput onUpload={onUpload} />
+      {error && (
+        <Alert red title={error.message}>
+          {error.description}
+        </Alert>
+      )}
       {image && !loading && (
         <>
           <div className="flex w-full flex-col items-center justify-center pt-9">
@@ -74,12 +89,12 @@ export default function Home() {
             </button>
           </div>
           <div className="relative mt-10 flex w-full flex-col items-center justify-center gap-1">
-            {SIZES.map((size) => (
-              <div>
+            {IMAGES_SIZES.map((size) => (
+              <div key={size}>
                 <h2 className="my-4 w-full text-center text-xl text-gray-900">
                   {size}px
                 </h2>
-                <Preview key={size} src={image} sizes={`${size}px`} />
+                <Preview src={image} sizes={`${size}px`} />
               </div>
             ))}
           </div>
@@ -93,7 +108,12 @@ export default function Home() {
 
       <Modal onClose={onEditClose} open={Boolean(editImage)}>
         {editImage && (
-          <ImageCrop image={editImage} aspect={1} onSave={onCrop} />
+          <ImageCrop image={editImage} aspect={1} onSave={onEditCrop} />
+        )}
+      </Modal>
+      <Modal onClose={onNewClose} open={Boolean(newImage)}>
+        {newImage && (
+          <ImageCrop image={newImage} aspect={1} onSave={onNewCrop} />
         )}
       </Modal>
     </div>
