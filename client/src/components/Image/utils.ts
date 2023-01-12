@@ -1,4 +1,4 @@
-import { IMAGES_SIZES } from "../constants"
+import { IMAGES_SIZES } from "../../constants"
 
 const IMAGE_BASE_URL = 'http://localhost:8080/'
 

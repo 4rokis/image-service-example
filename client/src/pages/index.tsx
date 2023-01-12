@@ -1,5 +1,5 @@
 import { Alert } from "@/components/Alert";
-import { IMAGES_SIZES } from "@/components/constants";
+import { IMAGES_SIZES } from "@/constants";
 import { FileInput } from "@/components/FileInput";
 import { ImageCrop } from "@/components/ImageCrop";
 import { Loader } from "@/components/Loader";
