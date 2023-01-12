@@ -23,6 +23,7 @@ export const checkTransformations = (queryParams: Query) => {
 }
 
 export const checkQueryParams = (queryParams: Query) => {
+  console.log(queryParams)
   return checkTransformations(queryParams)
 }
 

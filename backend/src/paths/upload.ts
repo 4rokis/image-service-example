@@ -4,6 +4,7 @@ import { ImageService } from '../lib/ImageService'
 import { getQueryParams } from '../lib/params'
 import { FileStorage } from '../lib/storage/FileStorage'
 import { Query } from '../lib/types'
+import { v4 as uuid } from 'uuid'
 
 export const upload = async (req: Request, res: Response) => {
   try {
@@ -25,11 +26,13 @@ export const upload = async (req: Request, res: Response) => {
       new FileStorage(),
       file as UploadedFile,
       params,
+      uuid(),
     )
-    await imageService.run()
+    const url = await imageService.run()
 
     return res.status(200).json({
       success: true,
+      data: url,
     })
   } catch (e) {
     console.error(e)

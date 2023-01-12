@@ -19,7 +19,7 @@ import {
 type Props = {
   aspect: number;
   image: string;
-  onSave(value: string): void;
+  onSave(paramQuery: string): void;
 };
 
 export const ImageCrop: React.FC<Props> = ({
@@ -81,11 +81,10 @@ export const ImageCrop: React.FC<Props> = ({
     if (!croppedAreaPixels.current) {
       throw new Error("Crop data should be present");
     }
-    const [key] = image.split("?");
     const { x, y, width, height } = croppedAreaPixels.current;
     const { x: cropX, y: cropY } = params;
     onSave(
-      `${key}?${queryString.stringify({
+      queryString.stringify({
         rotate: rotate,
         zoom: zoom,
         left: x,
@@ -94,7 +93,7 @@ export const ImageCrop: React.FC<Props> = ({
         y: cropY,
         width,
         height,
-      })}`
+      })
     );
   };
 

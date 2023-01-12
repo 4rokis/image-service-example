@@ -13,7 +13,3 @@ export type TransformParams = {
   height: number
   rotate: number
 }
-
-export interface Runner {
-  run: () => Promise<void>
-}
