@@ -1,12 +1,10 @@
 import { Request, Response } from 'express'
-import { UploadedFile } from 'express-fileupload'
 import { ImageService } from '../lib/ImageService'
 import { getQueryParams } from '../lib/params'
 import { FileStorage } from '../lib/storage/FileStorage'
 import { Query } from '../lib/types'
-import { v4 as uuid } from 'uuid'
 
-export const upload = async (req: Request, res: Response) => {
+export const edit = async (req: Request, res: Response) => {
   try {
     const params = getQueryParams(req.query as Query)
     if (!params) {
@@ -15,8 +13,16 @@ export const upload = async (req: Request, res: Response) => {
         success: false,
       })
     }
-    const file = req.files?.file
-    if (!file) {
+    if (!params.path) {
+      console.error('Params path is not defined')
+      return res.status(500).json({
+        success: false,
+      })
+    }
+    const storage = new FileStorage()
+    const data = await storage.getObject(params.path)
+    console.log('file', params.path)
+    if (!data) {
       console.error('File not found')
       return res.status(500).json({
         success: false,
@@ -24,9 +30,9 @@ export const upload = async (req: Request, res: Response) => {
     }
     const imageService = new ImageService(
       new FileStorage(),
-      (file as UploadedFile).data,
+      data,
       params,
-      uuid(),
+      params.path,
     )
     const url = await imageService.run()
 

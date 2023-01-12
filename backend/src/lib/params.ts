@@ -23,7 +23,10 @@ export const checkTransformations = (queryParams: Query) => {
 }
 
 export const checkQueryParams = (queryParams: Query) => {
-  console.log(queryParams)
+  const { path } = queryParams
+  if (path && typeof path !== 'string') {
+    return false
+  }
   return checkTransformations(queryParams)
 }
 
@@ -35,6 +38,7 @@ export const getQueryParams = (queryParams: Query): Params | null => {
   }
 
   return {
+    path: path as string,
     transform:
       isDefined(left) &&
       isDefined(top) &&

@@ -1,17 +1,17 @@
 import { Storage } from './Storage'
 import { existsSync, readFile, writeFile } from 'fs'
 
-const URL = 'http://localhost:3000/'
-const BASE_PATH = `${__dirname}/../../../public/`
+const URL = 'http://localhost:8080/'
+const BASE_PATH = `${__dirname}/../../../public`
 
 export class FileStorage implements Storage {
   getObjectURL(path: string): string {
-    return `${URL}/${path}`
+    return `${URL}${path}`
   }
 
   async getObject(path: string): Promise<Buffer> {
     return new Promise((resolve, reject) =>
-      readFile(`${BASE_PATH}/${path}`, null, (err, data) => {
+      readFile(`${BASE_PATH}${path}`, null, (err, data) => {
         if (err) {
           reject(err.message)
           return
@@ -28,7 +28,6 @@ export class FileStorage implements Storage {
   }
 
   async writeObject(data: string | Buffer, path: string): Promise<void> {
-    console.log('write', `${BASE_PATH}${path}`)
     return new Promise((resolve, reject) =>
       writeFile(`${BASE_PATH}${path}`, data, null, () => {
         resolve()

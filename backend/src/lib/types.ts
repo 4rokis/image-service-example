@@ -1,4 +1,5 @@
 export type Params = {
+  path?: string
   transform?: TransformParams
 }
 

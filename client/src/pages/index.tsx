@@ -4,7 +4,7 @@ import { Loader } from "@/components/Loader";
 import { Modal } from "@/components/Modal";
 import { Preview } from "@/components/Preview";
 import { createImageURL, destroyImageURL } from "@/lib/createImageURL";
-import { uploadImage } from "@/lib/uploadImage";
+import { editUploadedImage, uploadImage } from "@/lib/uploadImage";
 import { useCallback, useState } from "react";
 
 export const SIZES = [160, 320, 640, 750, 828, 1080, 1200, 1920, 2048, 3840];
@@ -13,7 +13,7 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [image, setImage] = useState<string>("");
   const [editImage, setEditImage] = useState<string | null>(null);
-  const [data, setData] = useState<File>();
+  const [data, setData] = useState<File | null>();
 
   const onUpload = useCallback(
     (data: File) => {
@@ -22,6 +22,10 @@ export default function Home() {
     },
     [setEditImage]
   );
+
+  const onEdit = useCallback(() => {
+    setEditImage(image);
+  }, [setEditImage, image]);
 
   const onEditClose = useCallback(() => {
     setEditImage((prev) => {
@@ -33,14 +37,12 @@ export default function Home() {
   }, [setEditImage]);
 
   const onCrop = useCallback(
-    async (paramsQuery: string) => {
-      if (!data) {
-        throw new Error("File data not defined");
-      }
+    async (path: string, paramsQuery: string) => {
+      console.log('path', path)
       try {
         setLoading(true);
         onEditClose();
-        const url = await uploadImage(paramsQuery, data);
+        const url = data ? await uploadImage(paramsQuery, data) : await editUploadedImage(paramsQuery, path)
         if (!url) {
           throw new Error('Upload failed')
         }
@@ -48,10 +50,11 @@ export default function Home() {
       } catch (e) {
         console.error(e);
       } finally {
+        setData(null)
         setLoading(false);
       }
     },
-    [setImage, uploadImage, data]
+    [setImage, uploadImage, data,]
   );
 
   return (
@@ -63,12 +66,12 @@ export default function Home() {
       {image && !loading && (
         <>
           <div className="flex w-full flex-col items-center justify-center pt-9">
-            {/* <button
-              onClick={() => setOpen(true)}
-              className="relative mx-auto w-full max-w-xs rounded-lg bg-blue-500 py-6 text-center text-lg text-white hover:bg-blue-400"
+            <button
+              onClick={onEdit}
+              className="inline-flex items-center justify-between rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-500"
             >
               EDIT
-            </button> */}
+            </button>
           </div>
           <div className="relative mt-10 flex w-full flex-col items-center justify-center gap-1">
             {SIZES.map((size) => (

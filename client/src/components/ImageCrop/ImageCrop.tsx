@@ -19,14 +19,10 @@ import {
 type Props = {
   aspect: number;
   image: string;
-  onSave(paramQuery: string): void;
+  onSave(path: string, paramQuery: string): void;
 };
 
-export const ImageCrop: React.FC<Props> = ({
-  image,
-  aspect,
-  onSave,
-}) => {
+export const ImageCrop: React.FC<Props> = ({ image, aspect, onSave }) => {
   const [loadedImage, setLoadedImage] = React.useState<string>();
   const [loading, setLoading] = React.useState(false);
   const [originalImage, urlParams] = image.split("?");
@@ -81,9 +77,11 @@ export const ImageCrop: React.FC<Props> = ({
     if (!croppedAreaPixels.current) {
       throw new Error("Crop data should be present");
     }
+    const path = new URL(originalImage).pathname;
     const { x, y, width, height } = croppedAreaPixels.current;
     const { x: cropX, y: cropY } = params;
     onSave(
+      path,
       queryString.stringify({
         rotate: rotate,
         zoom: zoom,

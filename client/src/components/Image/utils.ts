@@ -24,7 +24,6 @@ export const myS3Loader = ({ src, width, height }: any) => {
   if (!src) {
     return ''
   }
-  console.log(src, width)
   const [path, params, name, end] = parseFileName(src)
   return `${IMAGE_BASE_URL}/${name}-${width}.${end}`
 }

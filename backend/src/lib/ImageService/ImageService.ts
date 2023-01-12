@@ -2,7 +2,6 @@ import Sharp from 'sharp'
 import { Params, TransformParams } from '../../lib/types'
 import { Storage } from '../../lib/storage/Storage'
 import { getFileName, rotated0 } from '../utils'
-import { UploadedFile } from 'express-fileupload'
 
 export const SIZES = [160, 320, 640, 750, 828, 1080, 1200, 1920, 2048, 3840]
 
@@ -13,15 +12,10 @@ export class ImageService {
   name: string
   metadata!: Sharp.Metadata
 
-  constructor(
-    storage: Storage,
-    file: UploadedFile,
-    params: Params,
-    name: string = file.name,
-  ) {
+  constructor(storage: Storage, data: Buffer, params: Params, name: string) {
     this.storage = storage
     this.params = params
-    this.image = Sharp(file.data)
+    this.image = Sharp(data)
     this.name = getFileName(name)
   }
 
@@ -155,7 +149,7 @@ export class ImageService {
           .webp()
           .toBuffer()
           .then((data: Buffer) => {
-            return this.storage.writeObject(data, `${this.name}-${width}.webp`)
+            return this.storage.writeObject(data, `/${this.name}-${width}.webp`)
           })
       }),
     )
@@ -163,7 +157,7 @@ export class ImageService {
 
   save = async () => {
     const data = await this.image.rotate().webp().toBuffer()
-    return this.storage.writeObject(data, `${this.name}.webp`)
+    return this.storage.writeObject(data, `/${this.name}.webp`)
   }
 
   async run(): Promise<string> {
