@@ -1,13 +1,13 @@
 import { CropParams } from "@/types";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import queryString from "query-string";
 
-export type ApiResponse = {
+type ApiResponse = {
   success: boolean;
   data: string;
 };
 
-export const request = <T = ApiResponse>(
+const request = <T = ApiResponse>(
   url: string,
   method: string,
   body: any
@@ -39,12 +39,30 @@ const UNEXPECTED_ERROR: UploadError = {
   description: "This should not happen. Please retry.",
 };
 
-const ENDPOINT = `http://localhost:8080`;
+const ENDPOINT = `http://localhost:8080/api/image`;
 
-export const useImageUpload = () => {
+export const useImage = () => {
   const [error, setError] = useState<UploadError | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [image, setImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const response = await request(`${ENDPOINT}`, "GET", null);
+        if (response?.success) {
+          setImage(response.data);
+          return;
+        }
+        setImage(null);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   const uploadImage = useCallback(
     async (data: File, params: CropParams) => {
@@ -54,7 +72,7 @@ export const useImageUpload = () => {
         const formData = new FormData();
         formData.append("file", data);
         const response = await request(
-          `${ENDPOINT}/api/upload?${queryString.stringify(params)}`,
+          `${ENDPOINT}?${queryString.stringify(params)}`,
           "PUT",
           formData
         );
@@ -79,7 +97,7 @@ export const useImageUpload = () => {
         setLoading(true);
         setError(null);
         const response = await request(
-          `${ENDPOINT}/api/edit?${queryString.stringify({ path, ...params })}`,
+          `${ENDPOINT}?${queryString.stringify({ path, ...params })}`,
           "POST",
           null
         );

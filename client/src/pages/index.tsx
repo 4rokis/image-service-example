@@ -5,13 +5,13 @@ import { ImageCrop } from "@/components/ImageCrop";
 import { Loader } from "@/components/Loader";
 import { Modal } from "@/components/Modal";
 import { Preview } from "@/components/Preview";
-import { useImageUpload } from "@/lib/useImageUpload";
+import { useImage } from "@/lib/useImage";
 import { CropParams } from "@/types";
 import { useCallback, useState } from "react";
 
 export default function Home() {
   const { error, loading, image, editUploadedImage, uploadImage } =
-    useImageUpload();
+    useImage();
   const [editImage, setEditImage] = useState<string | null>(null);
   const [newImage, setNewImage] = useState<string | null>(null);
   const [data, setData] = useState<File | null>();

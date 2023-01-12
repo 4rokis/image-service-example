@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Cropper from "react-easy-crop";
 import queryString from "query-string";
 import {
@@ -8,14 +8,20 @@ import {
   ArrowUturnLeftIcon,
 } from "@heroicons/react/20/solid";
 
-import {
-  Crop,
-  MAX_ZOOM,
-  MIN_ZOOM,
-  ROTATE_ANGLE,
-  ZOOM_STEP,
-} from "./ImageCropUtils";
 import { CropParams } from "@/types";
+
+export type Crop = {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+export const MIN_ZOOM = 0.6
+export const MAX_ZOOM = 3
+
+export const ROTATE_ANGLE = 90
+export const ZOOM_STEP = 0.1
 
 type Props = {
   aspect: number;
@@ -24,23 +30,21 @@ type Props = {
 };
 
 export const ImageCrop: React.FC<Props> = ({ image, aspect, onSave }) => {
-  const [loadedImage, setLoadedImage] = React.useState<string>();
-  const [loading, setLoading] = React.useState(false);
-  const [originalImage, urlParams] = image.split("?");
-  const croppedAreaPixels = React.useRef({
+  const [imageUrl, urlParams] = image.split("?");
+  const croppedAreaPixels = useRef({
     x: 0,
     y: 0,
     width: 0,
     height: 0,
   });
-  const [params, setParams] = React.useState({
+  const [params, setParams] = useState({
     x: 0,
     y: 0,
     zoom: 1,
     rotate: 0,
   });
 
-  const onCropComplete = React.useCallback(
+  const onCropComplete = useCallback(
     async (_: any, crop: Crop) => {
       croppedAreaPixels.current = crop;
     },
@@ -62,23 +66,11 @@ export const ImageCrop: React.FC<Props> = ({ image, aspect, onSave }) => {
     });
   }, [image]);
 
-  const onCrop = async () => {
-    setLoading(true);
-  };
-
-  React.useEffect(() => {
-    const img = new Image();
-    img.onload = () => {
-      setLoadedImage(originalImage);
-    };
-    img.src = originalImage;
-  }, [originalImage]);
-
-  const upload = async () => {
+  const onCrop = useCallback(async () => {
     if (!croppedAreaPixels.current) {
       throw new Error("Crop data should be present");
     }
-    const path = new URL(originalImage).pathname;
+    const path = new URL(imageUrl).pathname;
     const { x, y, width, height } = croppedAreaPixels.current;
     const { x: cropX, y: cropY } = params;
     onSave(path, {
@@ -91,13 +83,7 @@ export const ImageCrop: React.FC<Props> = ({ image, aspect, onSave }) => {
       width,
       height,
     });
-  };
-
-  React.useEffect(() => {
-    if (loading) {
-      upload();
-    }
-  }, [loading]);
+  }, [onSave, imageUrl, params]);
 
   const rotateRight = () => {
     setParams(({ rotate, ...rest }) => ({
@@ -126,6 +112,7 @@ export const ImageCrop: React.FC<Props> = ({ image, aspect, onSave }) => {
       zoom: Math.min(zoom + ZOOM_STEP, MAX_ZOOM),
     }));
   };
+
   const setZoom = (newZoom: number) => {
     setParams(({ ...rest }) => ({
       ...rest,
@@ -147,7 +134,7 @@ export const ImageCrop: React.FC<Props> = ({ image, aspect, onSave }) => {
     <div className="relative flex h-full w-full">
       <div className="relative h-full w-full flex-none">
         <Cropper
-          image={loadedImage}
+          image={image}
           crop={crop}
           zoom={zoom}
           objectFit="horizontal-cover"
