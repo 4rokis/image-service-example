@@ -1,14 +1,14 @@
-import React, { useCallback, useRef, useState } from "react";
-import Cropper from "react-easy-crop";
-import queryString from "query-string";
+import React, { useCallback, useRef, useState } from 'react'
+import Cropper from 'react-easy-crop'
+import queryString from 'query-string'
 import {
   PlusIcon,
   MinusIcon,
   ArrowUturnRightIcon,
   ArrowUturnLeftIcon,
-} from "@heroicons/react/20/solid";
+} from '@heroicons/react/20/solid'
 
-import { CropParams } from "@/types";
+import { CropParams } from '@/types'
 
 export type Crop = {
   x: number
@@ -24,32 +24,32 @@ export const ROTATE_ANGLE = 90
 export const ZOOM_STEP = 0.1
 
 type Props = {
-  aspect: number;
-  image: string;
-  onSave(path: string, params: CropParams): void;
-};
+  aspect: number
+  image: string
+  onSave(path: string, params: CropParams): void
+}
 
 export const ImageCrop: React.FC<Props> = ({ image, aspect, onSave }) => {
-  const [imageUrl, urlParams] = image.split("?");
+  const [imageUrl, urlParams] = image.split('?')
   const croppedAreaPixels = useRef({
     x: 0,
     y: 0,
     width: 0,
     height: 0,
-  });
+  })
   const [params, setParams] = useState({
     x: 0,
     y: 0,
     zoom: 1,
     rotate: 0,
-  });
+  })
 
   const onCropComplete = useCallback(
     async (_: any, crop: Crop) => {
-      croppedAreaPixels.current = crop;
+      croppedAreaPixels.current = crop
     },
-    [image]
-  );
+    [image],
+  )
 
   React.useEffect(() => {
     const {
@@ -57,22 +57,22 @@ export const ImageCrop: React.FC<Props> = ({ image, aspect, onSave }) => {
       zoom = 1,
       x = 0,
       y = 0,
-    } = queryString.parse(urlParams) || {};
+    } = queryString.parse(urlParams) || {}
     setParams({
       x: Number(x),
       y: Number(y),
       zoom: Number(zoom),
       rotate: Number(rotate),
-    });
-  }, [image]);
+    })
+  }, [image])
 
   const onCrop = useCallback(async () => {
     if (!croppedAreaPixels.current) {
-      throw new Error("Crop data should be present");
+      throw new Error('Crop data should be present')
     }
-    const path = new URL(imageUrl).pathname;
-    const { x, y, width, height } = croppedAreaPixels.current;
-    const { x: cropX, y: cropY } = params;
+    const path = new URL(imageUrl).pathname
+    const { x, y, width, height } = croppedAreaPixels.current
+    const { x: cropX, y: cropY } = params
     onSave(path, {
       rotate: rotate,
       zoom: zoom,
@@ -82,53 +82,53 @@ export const ImageCrop: React.FC<Props> = ({ image, aspect, onSave }) => {
       y: cropY,
       width,
       height,
-    });
-  }, [onSave, imageUrl, params]);
+    })
+  }, [onSave, imageUrl, params])
 
   const rotateRight = () => {
     setParams(({ rotate, ...rest }) => ({
       ...rest,
       rotate: rotate + ROTATE_ANGLE,
-    }));
-  };
+    }))
+  }
 
   const rotateLeft = () => {
     setParams(({ rotate, ...rest }) => ({
       ...rest,
       rotate: rotate - ROTATE_ANGLE,
-    }));
-  };
+    }))
+  }
 
   const zoomOut = () => {
     setParams(({ zoom, ...rest }) => ({
       ...rest,
       zoom: Math.max(zoom - ZOOM_STEP, MIN_ZOOM),
-    }));
-  };
+    }))
+  }
 
   const zoomIn = () => {
     setParams(({ zoom, ...rest }) => ({
       ...rest,
       zoom: Math.min(zoom + ZOOM_STEP, MAX_ZOOM),
-    }));
-  };
+    }))
+  }
 
   const setZoom = (newZoom: number) => {
     setParams(({ ...rest }) => ({
       ...rest,
       zoom: newZoom,
-    }));
-  };
+    }))
+  }
 
   const setCrop = ({ x: newX, y: newY }: { x: number; y: number }) => {
     setParams(({ ...rest }) => ({
       ...rest,
       x: newX,
       y: newY,
-    }));
-  };
+    }))
+  }
 
-  const { zoom, rotate, ...crop } = params;
+  const { zoom, rotate, ...crop } = params
 
   return (
     <div className="relative flex h-full w-full">
@@ -186,5 +186,5 @@ export const ImageCrop: React.FC<Props> = ({ image, aspect, onSave }) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}

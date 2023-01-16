@@ -1,8 +1,6 @@
-import "@/styles/tailwind.css";
-import "focus-visible";
+import '@/styles/tailwind.css'
+import 'focus-visible'
 
 export default function App({ Component }: any) {
-  return (
-    <Component />
-  );
+  return <Component />
 }

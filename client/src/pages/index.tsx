@@ -1,71 +1,70 @@
-import { Alert } from "@/components/Alert";
-import { IMAGES_SIZES } from "@/constants";
-import { FileInput } from "@/components/FileInput";
-import { ImageCrop } from "@/components/ImageCrop";
-import { Loader } from "@/components/Loader";
-import { Modal } from "@/components/Modal";
-import { Preview } from "@/components/Preview";
-import { useImage } from "@/lib/useImage";
-import { CropParams } from "@/types";
-import { useCallback, useState } from "react";
+import { Alert } from '@/components/Alert'
+import { IMAGES_SIZES } from '@/constants'
+import { FileInput } from '@/components/FileInput'
+import { ImageCrop } from '@/components/ImageCrop'
+import { Loader } from '@/components/Loader'
+import { Modal } from '@/components/Modal'
+import { Preview } from '@/components/Preview'
+import { useImage } from '@/lib/useImage'
+import { CropParams } from '@/types'
+import { useCallback, useState } from 'react'
 
 export default function Home() {
-  const { error, loading, image, editUploadedImage, uploadImage } =
-    useImage();
-  const [editImage, setEditImage] = useState<string | null>(null);
-  const [newImage, setNewImage] = useState<string | null>(null);
-  const [data, setData] = useState<File | null>();
+  const { error, loading, image, editUploadedImage, uploadImage } = useImage()
+  const [editImage, setEditImage] = useState<string | null>(null)
+  const [newImage, setNewImage] = useState<string | null>(null)
+  const [data, setData] = useState<File | null>()
 
   const onUpload = useCallback(
     (data: File) => {
-      setNewImage(URL.createObjectURL(data));
-      setData(data);
+      setNewImage(URL.createObjectURL(data))
+      setData(data)
     },
-    [setEditImage]
-  );
+    [setEditImage],
+  )
 
   const onEdit = useCallback(() => {
-    setEditImage(image);
-  }, [setEditImage, image]);
+    setEditImage(image)
+  }, [setEditImage, image])
 
   const onNewClose = useCallback(() => {
     setNewImage((prev) => {
-      if (prev?.startsWith("blob")) {
-        URL.revokeObjectURL(prev) 
+      if (prev?.startsWith('blob')) {
+        URL.revokeObjectURL(prev)
       }
-      return null;
-    });
-  }, [setNewImage]);
+      return null
+    })
+  }, [setNewImage])
 
   const onEditClose = useCallback(() => {
-    setEditImage(null);
-  }, [setEditImage]);
+    setEditImage(null)
+  }, [setEditImage])
 
   const onNewCrop = useCallback(
     async (path: string, params: CropParams) => {
       if (!data) {
-        throw new Error("New Image data not defined");
+        throw new Error('New Image data not defined')
       }
       try {
-        uploadImage(data, params);
+        await uploadImage(data, params)
       } finally {
-        onNewClose();
-        setData(null);
+        onNewClose()
+        setData(null)
       }
     },
-    [editUploadedImage, data]
-  );
+    [editUploadedImage, data],
+  )
 
   const onEditCrop = useCallback(
     async (path: string, params: CropParams) => {
       try {
-        editUploadedImage(path, params);
+        await editUploadedImage(path, params)
       } finally {
-        onEditClose();
+        onEditClose()
       }
     },
-    [editUploadedImage]
-  );
+    [editUploadedImage],
+  )
 
   return (
     <div className="mx-auto max-w-4xl py-5 px-4 sm:px-6 lg:px-8">
@@ -117,5 +116,5 @@ export default function Home() {
         )}
       </Modal>
     </div>
-  );
+  )
 }

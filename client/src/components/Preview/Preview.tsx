@@ -7,18 +7,11 @@ type Props = {
   src: string
 }
 
-export const Preview: React.FC<Props> = ({
-  src,
-  sizes,
-}) => {
+export const Preview: React.FC<Props> = ({ src, sizes }) => {
   return (
-    <div className='w-full max-w-4xl relative'>
-      <div className='aspect-square'>
-        <Image
-          src={src}
-          sizes={sizes}
-          data-testid="imagePreviewImage"
-        />
+    <div className="relative w-full max-w-4xl">
+      <div className="aspect-square">
+        <Image src={src} sizes={sizes} data-testid="imagePreviewImage" />
       </div>
     </div>
   )

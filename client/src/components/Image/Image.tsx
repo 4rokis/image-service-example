@@ -7,6 +7,7 @@ type Props = HTMLAttributes<HTMLImageElement> & {
   src: string
   blur?: boolean
   sizes: string
+  cb?: number
   className?: string
 }
 
@@ -19,15 +20,15 @@ export const Image: React.FC<Props> = ({
   ...rest
 }) => {
   return (
-      <img
-        className='w-full h-full object-cover'
-        {...rest}
-        alt=""
-        src={src}
-        sizes={sizes}
-        srcSet={getS3SrcSet(src)}
-        placeholder={'empty'}
-      />
+    <img
+      className="h-full w-full object-cover"
+      {...rest}
+      alt=""
+      src={src}
+      sizes={sizes}
+      srcSet={getS3SrcSet(src)}
+      placeholder={'empty'}
+    />
   )
 }
 Image.displayName = 'Image'

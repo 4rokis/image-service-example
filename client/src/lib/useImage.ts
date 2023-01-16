@@ -1,16 +1,16 @@
-import { CropParams } from "@/types";
-import { useCallback, useEffect, useState } from "react";
-import queryString from "query-string";
+import { CropParams } from '@/types'
+import { useCallback, useEffect, useState } from 'react'
+import queryString from 'query-string'
 
 type ApiResponse = {
-  success: boolean;
-  data: string;
-};
+  success: boolean
+  data: string
+}
 
 const request = <T = ApiResponse>(
   url: string,
   method: string,
-  body: any
+  body: any,
 ): Promise<T | null> => {
   return fetch(url, {
     method,
@@ -18,103 +18,103 @@ const request = <T = ApiResponse>(
   })
     .then(async (res) => {
       if (res.status >= 400) {
-        console.error(`[${res.status}] ${res.statusText}`);
-        return null;
+        console.error(`[${res.status}] ${res.statusText}`)
+        return null
       }
-      return res.json();
+      return res.json()
     })
     .catch((e) => {
-      console.error(e);
-      return null;
-    });
-};
+      console.error(e)
+      return null
+    })
+}
 
 type UploadError = {
-  message: string;
-  description: string;
-};
+  message: string
+  description: string
+}
 
 const UNEXPECTED_ERROR: UploadError = {
-  message: "Unexpected error",
-  description: "This should not happen. Please retry.",
-};
+  message: 'Unexpected error',
+  description: 'This should not happen. Please retry.',
+}
 
-const ENDPOINT = `http://localhost:8080/api/image`;
+const ENDPOINT = `http://localhost:8080/api/image`
 
 export const useImage = () => {
-  const [error, setError] = useState<UploadError | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [image, setImage] = useState<string | null>(null);
+  const [error, setError] = useState<UploadError | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [image, setImage] = useState<string | null>(null)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
-        setLoading(true);
-        const response = await request(`${ENDPOINT}`, "GET", null);
+        setLoading(true)
+        const response = await request(`${ENDPOINT}`, 'GET', null)
         if (response?.success) {
-          setImage(response.data);
-          return;
+          setImage(response.data)
+          return
         }
-        setImage(null);
+        setImage(null)
       } catch (e) {
-        console.error(e);
+        console.error(e)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   const uploadImage = useCallback(
     async (data: File, params: CropParams) => {
       try {
-        setLoading(true);
-        setError(null);
-        const formData = new FormData();
-        formData.append("file", data);
+        setLoading(true)
+        setError(null)
+        const formData = new FormData()
+        formData.append('file', data)
         const response = await request(
           `${ENDPOINT}?${queryString.stringify(params)}`,
-          "PUT",
-          formData
-        );
+          'PUT',
+          formData,
+        )
         if (response?.success) {
-          setImage(response.data);
-          return;
+          setImage(response.data)
+          return
         }
-        setImage(null);
-        setError(UNEXPECTED_ERROR);
+        setImage(null)
+        setError(UNEXPECTED_ERROR)
       } catch (e) {
-        console.error(e);
+        console.error(e)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     },
-    [setLoading, setError, setImage]
-  );
+    [setLoading, setError, setImage],
+  )
 
   const editUploadedImage = useCallback(
     async (path: string, params: CropParams) => {
       try {
-        setLoading(true);
-        setError(null);
+        setLoading(true)
+        setError(null)
         const response = await request(
           `${ENDPOINT}?${queryString.stringify({ path, ...params })}`,
-          "POST",
-          null
-        );
+          'POST',
+          null,
+        )
         if (response?.success) {
-          setImage(response.data);
-          return;
+          setImage(`${response.data}`)
+          return
         }
-        setImage(null);
-        setError(UNEXPECTED_ERROR);
+        setImage(null)
+        setError(UNEXPECTED_ERROR)
       } catch (e) {
-        console.error(e);
+        console.error(e)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     },
-    [setLoading, setError, setImage]
-  );
+    [setLoading, setError, setImage],
+  )
 
   return {
     image,
@@ -122,5 +122,5 @@ export const useImage = () => {
     error,
     editUploadedImage,
     uploadImage,
-  };
-};
+  }
+}

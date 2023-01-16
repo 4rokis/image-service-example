@@ -1,14 +1,14 @@
-import { Dialog } from "@headlessui/react";
-import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
-import { useRef } from "react";
-import { Modal } from "../Modal";
+import { Dialog } from '@headlessui/react'
+import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
+import { useRef } from 'react'
+import { Modal } from '../Modal'
 
 type Props = {
-  title: string;
-  description: string;
-  open: boolean;
-  onClose: () => void;
-};
+  title: string
+  description: string
+  open: boolean
+  onClose: () => void
+}
 
 export const ErrorModal: React.FC<Props> = ({
   title,
@@ -34,9 +34,7 @@ export const ErrorModal: React.FC<Props> = ({
             {title}
           </Dialog.Title>
           <div className="mt-2">
-            <p className="text-sm text-gray-500">
-              {description} 
-            </p>
+            <p className="text-sm text-gray-500">{description}</p>
           </div>
         </div>
       </div>
@@ -51,6 +49,6 @@ export const ErrorModal: React.FC<Props> = ({
         </button>
       </div>
     </Modal>
-  );
-};
-ErrorModal.displayName = "ErrorModal";
+  )
+}
+ErrorModal.displayName = 'ErrorModal'
