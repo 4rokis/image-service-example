@@ -50,7 +50,7 @@ export const getQueryParams = (queryParams: Query): Params | null => {
             top: Number(top),
             width: Number(width),
             height: Number(height),
-            rotate: Number(rotate),
+            rotate: Math.abs(Number(rotate || '0') % 360),
           }
         : undefined,
   }
