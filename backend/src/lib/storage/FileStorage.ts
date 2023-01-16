@@ -2,7 +2,7 @@ import { Storage } from './Storage'
 import { existsSync, readFile, writeFile } from 'fs'
 
 const URL = 'http://localhost:8080/'
-const BASE_PATH = `${__dirname}/../../../public`
+const BASE_PATH = `${__dirname}/../../../public/`
 
 export class FileStorage implements Storage {
   getObjectURL(path: string): string {
@@ -28,7 +28,7 @@ export class FileStorage implements Storage {
   }
 
   async writeObject(data: string | Buffer, path: string): Promise<void> {
-    return new Promise((resolve, reject) =>
+    return new Promise((resolve) =>
       writeFile(`${BASE_PATH}${path}`, data, null, () => {
         resolve()
       }),

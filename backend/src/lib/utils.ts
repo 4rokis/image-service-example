@@ -16,8 +16,12 @@ export const isURLExists = async (url: string) => {
   return res.ok
 }
 
-export const getFileName = (path: string) => {
+export const extractFileName = (path: string) => {
   const pathParts = path.split('/')
   const filename = pathParts[pathParts.length - 1]
   return filename.split('.')[0]
+}
+
+export const getFileName = (name: string, postfix: string, size?: number) => {
+  return `${name}${size ? `-${size}` : ''}.${postfix}`
 }
