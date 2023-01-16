@@ -1,0 +1,30 @@
+{
+  "name": "image-service-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "turbo": "^1.7.0"
+  },
+  "scripts": {
+    "start": "turbo run start",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "test": "turbo run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4rokis/image-service-example.git"
+  },
+  "author": "Bogdan Sikora <bogdan@arokis.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/4rokis/image-service-example/issues"
+  },
+  "homepage": "https://github.com/4rokis/image-service-example#readme",
+  "workspaces": [
+    "backend",
+    "client"
+  ]
+}
