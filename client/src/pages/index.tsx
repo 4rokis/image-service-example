@@ -46,7 +46,7 @@ export default function Home() {
         throw new Error('New Image data not defined')
       }
       try {
-        await uploadImage(data, params)
+        uploadImage(data, params)
       } finally {
         onNewClose()
         setData(null)
@@ -58,7 +58,7 @@ export default function Home() {
   const onEditCrop = useCallback(
     async (path: string, params: CropParams) => {
       try {
-        await editUploadedImage(path, params)
+        editUploadedImage(path, params)
       } finally {
         onEditClose()
       }
