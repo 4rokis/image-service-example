@@ -93,7 +93,7 @@ export default function Home() {
                 <h2 className="my-4 w-full text-center text-xl text-gray-900">
                   {size}px
                 </h2>
-                <Preview src={image} sizes={`${size}px`} />
+                <Preview native={true} src={image} sizes={`${size}px`} />
               </div>
             ))}
           </div>

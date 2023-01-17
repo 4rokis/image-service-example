@@ -1,33 +1,45 @@
 import React, { HTMLAttributes } from 'react'
 import NextImage from 'next/image'
 
-import { getS3SrcSet } from './utils'
+import { getSrcSet, myLoader } from './utils'
 
 type Props = HTMLAttributes<HTMLImageElement> & {
   src: string
-  blur?: boolean
   sizes: string
-  cb?: number
+  native: boolean
   className?: string
 }
 
 export const Image: React.FC<Props> = ({
   className,
   src,
-  blur = true,
   sizes,
+  native,
   children,
   ...rest
 }) => {
+  if (native) {
+    return (
+      <img
+        className="h-full w-full object-cover"
+        {...rest}
+        alt=""
+        src={src}
+        sizes={sizes}
+        srcSet={getSrcSet(src)}
+      />
+    )
+  }
   return (
-    <img
-      className="h-full w-full object-cover"
+    <NextImage
       {...rest}
+      className="!relative"
+      fill
       alt=""
+      placeholder="empty"
+      loader={myLoader}
       src={src}
       sizes={sizes}
-      srcSet={getS3SrcSet(src)}
-      placeholder={'empty'}
     />
   )
 }
