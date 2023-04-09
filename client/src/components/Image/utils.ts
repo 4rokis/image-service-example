@@ -1,6 +1,6 @@
 import { IMAGES_SIZES } from '@/constants'
 
-const IMAGE_BASE_URL = 'http://localhost:8080/'
+const IMAGE_BASE_URL = 'https://stylespace-demo.s3.eu-central-1.amazonaws.com'
 
 export const parseFileName = (path: string) => {
   const pathParts = path.split('/')

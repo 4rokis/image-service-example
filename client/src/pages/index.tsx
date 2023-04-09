@@ -10,7 +10,8 @@ import { CropParams } from '@/types'
 import { useCallback, useState } from 'react'
 
 export default function Home() {
-  const { error, loading, image, editUploadedImage, uploadImage } = useImage()
+  const { error, loading, image, original, editUploadedImage, uploadImage } =
+    useImage()
   const [editImage, setEditImage] = useState<string | null>(null)
   const [newImage, setNewImage] = useState<string | null>(null)
   const [data, setData] = useState<File | null>()
@@ -24,8 +25,8 @@ export default function Home() {
   )
 
   const onEdit = useCallback(() => {
-    setEditImage(image)
-  }, [setEditImage, image])
+    setEditImage(original)
+  }, [setEditImage, original])
 
   const onNewClose = useCallback(() => {
     setNewImage((prev) => {
@@ -93,7 +94,7 @@ export default function Home() {
                 <h2 className="my-4 w-full text-center text-xl text-gray-900">
                   {size}px
                 </h2>
-                <Preview native={true} src={image} sizes={`${size}px`} />
+                <Preview src={image} sizes={`${size}px`} />
               </div>
             ))}
           </div>

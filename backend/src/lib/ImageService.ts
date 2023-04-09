@@ -2,9 +2,14 @@ import { Params } from './types'
 import { Storage } from './storage/Storage'
 import { extractFileName, getFileName } from './utils'
 import { Image } from './Image'
+import queryString from 'querystring'
 
-const SIZES = [160, 320, 640, 750, 828, 1080, 1200, 1920, 2048, 3840]
 const POSTFIX = 'webp'
+
+export type ImageData = {
+  original: string
+  updated: string
+}
 
 export class ImageService {
   storage: Storage
@@ -19,37 +24,51 @@ export class ImageService {
     this.name = extractFileName(name)
   }
 
-  saveOriginal = async () => {
-    const data = await this.image.toBuffer()
-    return this.storage.writeObject(data, getFileName(this.name, POSTFIX))
+  save = async (image: Image, name: string) => {
+    const data = await image.toBuffer()
+    return this.storage.writeObject(data, name)
   }
 
   transformImage = async () => {
     if (!this.params.transform) {
-      return
+      throw new Error('No transform params provided')
     }
     const { rotate, ...cropParams } = this.params.transform
     return (await this.image.rotate(rotate)).crop(cropParams)
   }
 
-  resizeAndSave = async () => {
-    return this.image.resizeTo(SIZES, (buffer, width) => {
-      return this.storage.writeObject(
-        buffer,
-        getFileName(this.name, POSTFIX, width),
-      )
-    })
+  getUrl = (name: string) => {
+    return `${this.storage.getObjectURL(name)}?${queryString.stringify(
+      this.params.transform || {},
+    )}`
   }
 
   getOriginalUrl = () => {
-    return this.storage.getObjectURL(getFileName(this.name, POSTFIX))
+    return this.getUrl(getFileName(this.name, POSTFIX))
   }
 
-  async run(): Promise<string> {
+  getUpdatedUrl = () => {
+    return this.getUrl(getFileName(`${this.name}-u`, POSTFIX))
+  }
+
+  async run(): Promise<ImageData> {
+    const promises: Promise<void>[] = []
     await this.image.correctRotation()
-    await this.saveOriginal()
-    await this.transformImage()
-    await this.resizeAndSave()
-    return this.getOriginalUrl()
+    // Save original image for future transformations
+    promises.push(this.save(this.image, getFileName(this.name, POSTFIX)))
+    // Save transformed image
+    promises.push(
+      this.save(
+        this.params.transform ? await this.transformImage() : this.image,
+        getFileName(`${this.name}-u`, POSTFIX),
+      ),
+    )
+
+    // Wait for everything to finish
+    await Promise.all(promises)
+    return {
+      original: this.getOriginalUrl(),
+      updated: this.getUpdatedUrl(),
+    }
   }
 }

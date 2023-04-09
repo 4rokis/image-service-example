@@ -1,13 +1,13 @@
 import { Request, Response } from 'express'
 import { UploadedFile } from 'express-fileupload'
-import { ImageService } from '../lib/ImageService'
+import { ImageService, ImageData } from '../lib/ImageService'
 import { getQueryParams } from '../lib/params'
 import { FileStorage } from '../lib/storage/FileStorage'
 import { Query } from '../lib/types'
 import { v4 as uuid } from 'uuid'
-import queryString from 'querystring'
+import { AWSStorage } from '../lib/storage/AwsStorage'
 
-let image: string | null = null
+let data: ImageData | null = null
 
 export const upload = async (req: Request, res: Response) => {
   try {
@@ -26,17 +26,16 @@ export const upload = async (req: Request, res: Response) => {
       })
     }
     const imageService = new ImageService(
-      new FileStorage(),
+      new AWSStorage(),
       (file as UploadedFile).data,
       params,
       uuid(),
     )
-    const url = await imageService.run()
+    data = await imageService.run()
 
-    image = `${url}?${queryString.stringify(req.query as Query)}`
     return res.status(200).json({
       success: true,
-      data: image,
+      data,
     })
   } catch (e) {
     console.error(e)
@@ -61,26 +60,25 @@ export const edit = async (req: Request, res: Response) => {
         success: false,
       })
     }
-    const storage = new FileStorage()
-    const data = await storage.getObject(params.path)
-    if (!data) {
+    const storage = new AWSStorage()
+    const imageData = await storage.getObject(params.path)
+    if (!imageData) {
       console.error('File not found')
       return res.status(500).json({
         success: false,
       })
     }
     const imageService = new ImageService(
-      new FileStorage(),
-      data,
+      storage,
+      imageData as Buffer,
       params,
       params.path,
     )
-    const url = await imageService.run()
+    data = await imageService.run()
 
-    image = `${url}?${queryString.stringify(req.query as Query)}`
     return res.status(200).json({
       success: true,
-      data: image,
+      data,
     })
   } catch (e) {
     console.error(e)
@@ -91,8 +89,8 @@ export const edit = async (req: Request, res: Response) => {
 }
 
 export const getImage = async (req: Request, res: Response) => {
-  return res.status(image ? 200 : 404).json({
+  return res.status(data ? 200 : 404).json({
     success: true,
-    data: image,
+    data,
   })
 }

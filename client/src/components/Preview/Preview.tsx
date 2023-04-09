@@ -5,12 +5,12 @@ import { Image } from '@/components/Image'
 type Props = {
   sizes: string
   src: string
-  native: boolean
+  native?: boolean
 }
 
-export const Preview: React.FC<Props> = ({ src, sizes, native }) => {
+export const Preview: React.FC<Props> = ({ src, sizes, native = false }) => {
   return (
-    <div className="relative w-full max-w-4xl">
+    <div style={{ width: sizes }} className="relative w-full max-w-[90vw]">
       <div className="aspect-square">
         <Image
           native={native}

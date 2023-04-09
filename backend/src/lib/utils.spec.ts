@@ -5,10 +5,6 @@ describe('utils', () => {
     it('simple', () => {
       expect(getFileName('name', 'png')).toBe('name.png')
     })
-
-    it('size', () => {
-      expect(getFileName('name', 'png', 300)).toBe('name-300.png')
-    })
   })
 
   describe('extractFileName', () => {

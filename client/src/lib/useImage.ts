@@ -2,10 +2,18 @@ import { CropParams } from '@/types'
 import { useCallback, useEffect, useState } from 'react'
 import queryString from 'query-string'
 
-type ApiResponse = {
-  success: boolean
-  data: string
-}
+type ApiResponse =
+  | {
+      success: true
+      data: {
+        original: string
+        updated: string
+      }
+    }
+  | {
+      success: false
+      data: null
+    }
 
 const request = <T = ApiResponse>(
   url: string,
@@ -45,6 +53,7 @@ export const useImage = () => {
   const [error, setError] = useState<UploadError | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [image, setImage] = useState<string | null>(null)
+  const [original, setOriginal] = useState<string | null>(null)
 
   useEffect(() => {
     ;(async () => {
@@ -52,7 +61,8 @@ export const useImage = () => {
         setLoading(true)
         const response = await request(`${ENDPOINT}`, 'GET', null)
         if (response?.success) {
-          setImage(response.data)
+          setImage(response.data.updated)
+          setOriginal(response.data.original)
           return
         }
         setImage(null)
@@ -76,8 +86,9 @@ export const useImage = () => {
           'PUT',
           formData,
         )
-        if (response?.success) {
-          setImage(response.data)
+        if (response?.success && response.data) {
+          setImage(response.data.updated)
+          setOriginal(response.data.original)
           return
         }
         setImage(null)
@@ -101,8 +112,9 @@ export const useImage = () => {
           'POST',
           null,
         )
-        if (response?.success) {
-          setImage(`${response.data}`)
+        if (response?.success && response.data) {
+          setImage(response.data.updated)
+          setOriginal(response.data.original)
           return
         }
         setImage(null)
@@ -118,6 +130,7 @@ export const useImage = () => {
 
   return {
     image,
+    original,
     loading,
     error,
     editUploadedImage,

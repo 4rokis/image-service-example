@@ -8,6 +8,6 @@ export const extractFileName = (path: string) => {
   return filename.split('.')[0]
 }
 
-export const getFileName = (name: string, postfix: string, size?: number) => {
-  return `${name}${size ? `-${size}` : ''}.${postfix}`
+export const getFileName = (name: string, postfix: string) => {
+  return `${name}.${postfix}`
 }

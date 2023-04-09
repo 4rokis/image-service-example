@@ -7,11 +7,9 @@ type Props = HTMLAttributes<HTMLImageElement> & {
   src: string
   sizes: string
   native: boolean
-  className?: string
 }
 
 export const Image: React.FC<Props> = ({
-  className,
   src,
   sizes,
   native,
@@ -33,11 +31,10 @@ export const Image: React.FC<Props> = ({
   return (
     <NextImage
       {...rest}
-      className="!relative"
+      className="!relative object-cover"
       fill
       alt=""
       placeholder="empty"
-      loader={myLoader}
       src={src}
       sizes={sizes}
     />
