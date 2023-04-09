@@ -18,7 +18,7 @@ export default function Home() {
 
   const onUpload = useCallback(
     (data: File) => {
-      setNewImage(URL.createObjectURL(data))
+      uploadImage(data)
       setData(data)
     },
     [setEditImage],

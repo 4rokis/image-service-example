@@ -75,7 +75,7 @@ export const useImage = () => {
   }, [])
 
   const uploadImage = useCallback(
-    async (data: File, params: CropParams) => {
+    async (data: File, params: Partial<CropParams> = {}) => {
       try {
         setLoading(true)
         setError(null)
